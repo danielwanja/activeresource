@@ -1,6 +1,6 @@
 # WARNING: not prime time ready...In fact I just started this project (August 15th 2011)
 
-# flexonrails - An ActionScript Framework to integrate Flex with Ruby on Rails
+# activeresource - An ActionScript Framework to integrate Flex with Ruby on Rails
 
 A Flex/ActionScript Framework to integrate with Ruby on Rails. Provides Restful access to Rails including nested attributes.
 
