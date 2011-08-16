@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="active_resource.ActiveResource"/>
+    <classEntry path="active_resource.RailsEncoder"/>
+    <classEntry path="active_resource.RailsDecoder"/>
+    <classEntry path="test.TestActiveResource"/>
+    <classEntry path="test.models.Department"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
