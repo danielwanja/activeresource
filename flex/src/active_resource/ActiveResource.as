@@ -2,6 +2,8 @@ package active_resource
 {
 	import bulk_api.BulkUtility;
 	
+	import flash.utils.getDefinitionByName;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.mx_internal;
 	import mx.rpc.AsyncResponder;
@@ -37,57 +39,58 @@ package active_resource
 		
 		static public function find(clazz:Class, id:Number):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/api/bulk?"+resourceForClass(clazz)+"="+id;
-			return call(http)
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id;
+			return send(http);
 		}
 		
 		static public function findAll(clazz:Class):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/api/bulk?"+resourceForClass(clazz)+"=all";
-			return call(http);
+			http.url = baseUrl+"/"+resourceForClass(clazz);
+			return send(http);			
 		}
 		
 		static public function create(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/api/bulk";
+			http.url = baseUrl+"/"+resourceForClass(clazz);
 			http.method = "POST";
 			http.resultFormat = "text";
 			http.contentType = "application/json";			
-			return call(http, RailsEncoder.to_rails(data), data)
+			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function update(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/api/bulk";
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id;
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
 			http.resultFormat = "text";
 			http.contentType = "application/json";
-			return call(http, RailsEncoder.to_rails(data), data)
+			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function destroy(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/api/bulk";
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
 			http.resultFormat = "text";
 			http.contentType = "application/json";
-			return call(http, RailsEncoder.to_rails(data), data)
+			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
 		//-----------------------------------------------------------
 		// DATA CONVERSION METHODS
 		//-----------------------------------------------------------
+		static public var send:Function = sendImplementation;
 		
-		static protected function call(service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
+		static public function sendImplementation(service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
 			var call:AsyncToken = service.send(params);
 			call.addResponder(new AsyncResponder(handleResult, handleFault));
 			call.originalData = originalData; // token
 			return call;			
 		}
 		
-		static protected function handleResult(event:ResultEvent, token:Object=null):void {
+		static public function handleResult(event:ResultEvent, token:Object=null):void {
 			event.mx_internal::setResult(mapErrors(RailsDecoder.from_rails(event.result as String), event.token.originalData));
 		}
 		
@@ -139,6 +142,11 @@ package active_resource
 		//-----------------------------------------------------------
 		// CLASS REGISTRY METHODS
 		//-----------------------------------------------------------
+		public function get resourceName():String {
+			var className:String = flash.utils.getQualifiedClassName(this); // FIXME: we could cache the className/resourceName
+			var clazz:Class = getDefinitionByName(className) as Class;
+			return resourceForClass(clazz);
+		}
 		
 		public static function classForResource(resourceName:String):Class {
 			var clazz:Class = resourceMap[resourceName];
@@ -155,5 +163,6 @@ package active_resource
 			resourceMap[resourceName] = clazz;
 			reverseMap[clazz] = resourceName;
 		}		
+		
 	}
 }

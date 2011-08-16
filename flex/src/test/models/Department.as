@@ -9,6 +9,6 @@ package test.models
 			super(attributes);
 		}
 		
-		resource("departements", Department); 		
+		resource("departments", Department); 		
 	}
 }

@@ -4,8 +4,9 @@
     <classEntry path="active_resource.ActiveResource"/>
     <classEntry path="active_resource.RailsEncoder"/>
     <classEntry path="active_resource.RailsDecoder"/>
-    <classEntry path="test.TestActiveResource"/>
+    <classEntry path="test.active_resource.TestActiveResource"/>
     <classEntry path="test.models.Department"/>
+    <classEntry path="test.models.Employee"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
