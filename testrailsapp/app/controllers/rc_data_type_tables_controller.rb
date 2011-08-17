@@ -7,6 +7,7 @@ class RcDataTypeTablesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @rc_data_type_tables }
+      format.xml  { render xml:  @rc_data_type_tables }
     end
   end
 

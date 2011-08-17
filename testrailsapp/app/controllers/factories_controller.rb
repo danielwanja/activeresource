@@ -25,15 +25,15 @@ if RAILS_ENV == "test"
     def setup_departments
       Department.delete_all  
       Employee.delete_all
-      dep = Department.create(:name=> 'department1', :city => 'Littleton', :state => 'CO', :create_user => "TEST", :create_date => DateTime.now)      
-      employee1 = dep.employees.create(:first_name=>"first_1", :last_name =>"last_1", :job_id => 12, :create_user => "TEST", :create_date => DateTime.now)      
-      employee2 = dep.employees.create(:first_name=>"first_2", :last_name =>"last_2", :job_id => 12, :create_user => "TEST", :create_date => DateTime.now)      
-      employee3 = dep.employees.create(:first_name=>"first_3", :last_name =>"last_3", :job_id => 12, :create_user => "TEST", :create_date => DateTime.now)      
+      dep = Department.create(:name=> 'department1', :city => 'Littleton', :state => 'CO')      
+      employee1 = dep.employees.create(:first_name=>"first_1", :last_name =>"last_1", :job_id => 12)      
+      employee2 = dep.employees.create(:first_name=>"first_2", :last_name =>"last_2", :job_id => 12)      
+      employee3 = dep.employees.create(:first_name=>"first_3", :last_name =>"last_3", :job_id => 12)      
       employee3.manager = employee1
      
       departments = {:department1 => dep,
-                      :department2 => Department.create(:name=> 'department2', :city => 'Littleton', :state => 'CO', :create_user => "TEST", :create_date => DateTime.now) ,
-                      :department3 => Department.create(:name=> 'department3', :city => 'Littleton', :state => 'CO', :create_user => "TEST", :create_date => DateTime.now) 
+                      :department2 => Department.create(:name=> 'department2', :city => 'Littleton', :state => 'CO') ,
+                      :department3 => Department.create(:name=> 'department3', :city => 'Littleton', :state => 'CO') 
       }
       departments
     end

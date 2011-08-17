@@ -7,6 +7,9 @@
     <classEntry path="test.active_resource.TestActiveResource"/>
     <classEntry path="test.models.Department"/>
     <classEntry path="test.models.Employee"/>
+    <classEntry path="test.active_resource.TestServerCalls"/>
+    <classEntry path="test.models.RcDataTypeTable"/>
+    <classEntry path="test.active_resource.TestLoadFromXML"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

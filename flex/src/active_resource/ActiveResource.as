@@ -39,13 +39,15 @@ package active_resource
 		
 		static public function find(clazz:Class, id:Number):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id;
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id+".xml";
+			http.resultFormat = "e4x";
 			return send(http);
 		}
 		
 		static public function findAll(clazz:Class):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz);
+			http.url = baseUrl+"/"+resourceForClass(clazz)+".xml";
+			http.resultFormat = "e4x";		
 			return send(http);			
 		}
 		
@@ -53,8 +55,7 @@ package active_resource
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz);
 			http.method = "POST";
-			http.resultFormat = "text";
-			http.contentType = "application/json";			
+			http.resultFormat = "e4x";
 			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
@@ -63,8 +64,7 @@ package active_resource
 			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id;
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
-			http.resultFormat = "text";
-			http.contentType = "application/json";
+			http.resultFormat = "e4x";
 			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
@@ -73,8 +73,7 @@ package active_resource
 			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
-			http.resultFormat = "text";
-			http.contentType = "application/json";
+			http.resultFormat = "e4x";
 			return send(http, RailsEncoder.to_rails(data), data)
 		}
 		
