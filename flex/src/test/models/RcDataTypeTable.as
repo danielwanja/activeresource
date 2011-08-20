@@ -2,7 +2,7 @@ package test.models
 {
 	import active_resource.ActiveResource;
 	
-	public class RcDataTypeTable extends ActiveResource
+	dynamic public class RcDataTypeTable extends ActiveResource
 	{
 		public function RcDataTypeTable(attributes:Object=null)
 		{

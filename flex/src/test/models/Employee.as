@@ -2,7 +2,7 @@ package test.models
 {
 	import active_resource.ActiveResource;
 	
-	public class Employee extends ActiveResource
+	dynamic public class Employee extends ActiveResource
 	{
 		public function Employee(attributes:Object=null)
 		{

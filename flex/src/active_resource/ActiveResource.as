@@ -1,5 +1,6 @@
 package active_resource
 {
+	import bulk_api.BulkResource;
 	import bulk_api.BulkUtility;
 	
 	import flash.utils.getDefinitionByName;
@@ -48,7 +49,7 @@ package active_resource
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+".xml";
 			http.resultFormat = "e4x";		
-			return send(http);			
+			return send(clazz, http);			
 		}
 		
 		static public function create(clazz:Class, data:Object):AsyncToken {
@@ -56,7 +57,7 @@ package active_resource
 			http.url = baseUrl+"/"+resourceForClass(clazz);
 			http.method = "POST";
 			http.resultFormat = "e4x";
-			return send(http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function update(clazz:Class, data:Object):AsyncToken {
@@ -65,7 +66,7 @@ package active_resource
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
 			http.resultFormat = "e4x";
-			return send(http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function destroy(clazz:Class, data:Object):AsyncToken {
@@ -74,23 +75,24 @@ package active_resource
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
 			http.resultFormat = "e4x";
-			return send(http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
 		//-----------------------------------------------------------
 		// DATA CONVERSION METHODS
 		//-----------------------------------------------------------
-		static public var send:Function = sendImplementation;
+		static public var send:Function = sendImplementation;   // Implementation can be switched during testing. FIXME: find a better way to test.
 		
-		static public function sendImplementation(service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
+		static public function sendImplementation(resourceClazz:Class, service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
 			var call:AsyncToken = service.send(params);
 			call.addResponder(new AsyncResponder(handleResult, handleFault));
 			call.originalData = originalData; // token
+			call.resourceClazz = resourceClazz
 			return call;			
 		}
 		
 		static public function handleResult(event:ResultEvent, token:Object=null):void {
-			event.mx_internal::setResult(mapErrors(RailsDecoder.from_rails(event.result as String), event.token.originalData));
+			event.mx_internal::setResult(mapErrors(RailsDecoder.from_rails(event.token.resourceClazz, event.result as String), event.token.originalData));
 		}
 		
 		static protected function handleFault(fault:FaultEvent, token:Object=null):void {
@@ -141,6 +143,7 @@ package active_resource
 		//-----------------------------------------------------------
 		// CLASS REGISTRY METHODS
 		//-----------------------------------------------------------
+		
 		public function get resourceName():String {
 			var className:String = flash.utils.getQualifiedClassName(this); // FIXME: we could cache the className/resourceName
 			var clazz:Class = getDefinitionByName(className) as Class;
@@ -148,19 +151,22 @@ package active_resource
 		}
 		
 		public static function classForResource(resourceName:String):Class {
-			var clazz:Class = resourceMap[resourceName];
-			return clazz ? clazz : Object;
+			return BulkResource.classForResource(resourceName);
+//			var clazz:Class = resourceMap[resourceName];
+//			return clazz ? clazz : Object;
 		}
 		
 		public static function resourceForClass(clazz:Class):String {
-			return reverseMap[clazz];
+			return BulkResource.resourceForClass(clazz);
+			//return reverseMap[clazz];
 		}
 		
 		static protected var resourceMap:Object = {};
 		static protected var reverseMap:Object = {};
 		static protected function resource(resourceName:String, clazz:Class):void {
-			resourceMap[resourceName] = clazz;
-			reverseMap[clazz] = resourceName;
+			BulkResource.resource(resourceName, clazz);
+//			resourceMap[resourceName] = clazz;
+//			reverseMap[clazz] = resourceName;
 		}		
 		
 	}

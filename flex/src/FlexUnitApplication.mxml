@@ -9,14 +9,12 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.active_resource.TestServerCalls;
-			import mx.core.IFlexModuleFactory;
-			private var link:IFlexModuleFactory;
-	
+			import test.active_resource.FromJSONTest;
+			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				testsToRun.push(test.active_resource.TestServerCalls);
+				testsToRun.push(test.active_resource.FromJSONTest);
 				return testsToRun;
 			}
 			

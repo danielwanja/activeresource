@@ -4,12 +4,13 @@
     <classEntry path="active_resource.ActiveResource"/>
     <classEntry path="active_resource.RailsEncoder"/>
     <classEntry path="active_resource.RailsDecoder"/>
-    <classEntry path="test.active_resource.TestActiveResource"/>
+    <classEntry path="test.active_resource.ActiveResourceTest"/>
     <classEntry path="test.models.Department"/>
     <classEntry path="test.models.Employee"/>
-    <classEntry path="test.active_resource.TestServerCalls"/>
+    <classEntry path="test.active_resource.ServerCallsTest"/>
     <classEntry path="test.models.RcDataTypeTable"/>
-    <classEntry path="test.active_resource.TestLoadFromXML"/>
+    <classEntry path="test.active_resource.FromJSONTest"/>
+    <classEntry path="test.fixtures.RailFixtures"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

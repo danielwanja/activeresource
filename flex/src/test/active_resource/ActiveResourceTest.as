@@ -15,7 +15,7 @@ package test.active_resource
 	import test.models.Department;
 	import test.models.Employee;
 
-	public class TestActiveResource
+	public class ActiveResourceTest
 	{		
 		[Before]
 		public function setUp():void

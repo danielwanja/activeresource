@@ -12,7 +12,7 @@ package test.active_resource
 	
 	import test.models.RcDataTypeTable;
 
-	public class TestServerCalls
+	public class ServerCallsTest
 	{		
 		[Before]
 		public function setUp():void
