@@ -105,12 +105,14 @@ To delete one post and it's comments:
 ### RoadMap
 
 1. setup test environment
-2. create base ActiveResource class
+2. data conversion (from_json)
+3. data conversion (to_json)
 3. find/create/update/delete
 4. error handling
-5. nested_attributes (with ActiveCollection)
-5. authenticity_token
-6. unify base classes with bulk_api_flex
+5. date handling
+6. nested_attributes (with ActiveCollection)
+7. authenticity_token
+8. unify base classes with bulk_api_flex
 
 ...
 
