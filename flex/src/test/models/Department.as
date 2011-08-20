@@ -9,6 +9,7 @@ package test.models
 			super(attributes);
 		}
 		
+		/* static block */		
 		resource("departments", Department); 		
 	}
 }

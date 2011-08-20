@@ -164,6 +164,7 @@ package active_resource
 		static protected var resourceMap:Object = {};
 		static protected var reverseMap:Object = {};
 		static protected function resource(resourceName:String, clazz:Class):void {
+			trace("Registering resource:"+resourceName)			
 			BulkResource.resource(resourceName, clazz);
 //			resourceMap[resourceName] = clazz;
 //			reverseMap[clazz] = resourceName;

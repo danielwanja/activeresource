@@ -41,6 +41,7 @@
 			]]>
 		</fx:String>
 		
+		<!-- Department.all.to_json(:include=>:employees) -->
 		<fx:String id="departments">
 			<![CDATA[
 			[{

@@ -9,6 +9,7 @@ package test.models
 			super(attributes);
 		}
 		
+		/* static block */		
 		resource("rc_data_type_tables", RcDataTypeTable); 			
 	}
 }

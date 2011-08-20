@@ -20,6 +20,7 @@ package active_resource
 			var resourceName:String = resourceClass is String ? resourceClass : BulkResource.resourceForClass(resourceClass);
 			var actionScript:Object = new JSONDecoder(json, /*strict*/true).getValue();
 			// FIXME: Add Rails validation errors support
+			// FIXME: merge/refactor the following with the BulkDecoder
 			if (actionScript is Array) {
 				return BulkDecoder.decodeArray(resourceName, actionScript as Array);
 			} else {
