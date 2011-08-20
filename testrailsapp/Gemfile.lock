@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/thoughtbot/factory_girl.git
+  revision: 854204dd12831a320f3226a875d9175ec68d1544
+  specs:
+    factory_girl (2.0.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -51,6 +57,7 @@ GEM
     jquery-rails (1.0.13)
       railties (~> 3.0)
       thor (~> 0.14)
+    libxml-ruby (2.2.1)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -112,7 +119,9 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 3.1.0.rc)
+  factory_girl!
   jquery-rails
+  libxml-ruby
   rails (= 3.1.0.rc5)
   sass-rails (~> 3.1.0.rc)
   sqlite3

@@ -30,4 +30,6 @@ gem 'jquery-rails'
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
+  gem "factory_girl", :git => "git://github.com/thoughtbot/factory_girl.git"
+  gem "libxml-ruby"
 end

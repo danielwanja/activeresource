@@ -1,9 +1,9 @@
 # This controller is used from Flex to reset the test database between test methods.
 
-if RAILS_ENV == "test"
+if Rails.env.test?
   require 'active_record/fixtures'
   require 'factory_girl'
-  require 'xml'
+#  require 'xml'
   
   class FactoriesController < ActionController::Base
     FIXTURES_ROOT = "#{Rails.root}/test/fixtures"
@@ -73,7 +73,7 @@ if RAILS_ENV == "test"
       EOXML
     end
     
-    RESULTS_FILE = File.join(RAILS_ROOT, '..', 'active_resource', 'testResults', 'TEST-AllTests.xml')
+    RESULTS_FILE = File.join(Rails.root, '..', 'active_resource', 'testResults', 'TEST-AllTests.xml')
     def save_test_results
       File.open(RESULTS_FILE, 'w') { |f| f.write params['0'] }
       head :ok
