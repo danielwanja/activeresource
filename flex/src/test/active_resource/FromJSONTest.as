@@ -20,9 +20,6 @@ package test.active_resource
 	public class FromJSONTest
 	{		
 		private var fixtures:RailFixtures ;
-		var v1:Employee;
-		var v2:Department;
-		var v3:RcDataTypeTable;
 		
 		[BeforeClass]
 		static public function registerResources():void {

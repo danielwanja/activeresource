@@ -57,17 +57,17 @@ package test.active_resource
 			assertRestCall(ActiveResource.findAll(Department), 			"/departments.json", "GET");
 			
 			// Create
-			assertRestCall(ActiveResource.create(Department, {}), 		"/departments", "POST");
+			assertRestCall(ActiveResource.create(Department, {}), 		"/departments.json", "POST");
 			
 			// Show
 			assertRestCall(ActiveResource.find(Department, 1), 			"/departments/1.json", "GET");
 			
 			// Update
-			assertRestCall(ActiveResource.update(Department, {id:1}), 	"/departments/1", "POST"); // PUT
+			assertRestCall(ActiveResource.update(Department, {id:1}), 	"/departments/1.json", "POST"); // PUT
 			assertThat(lastHttpService.headers, hasProperties({X_HTTP_METHOD_OVERRIDE:'put'}));
 			
 			// Delete
-			assertRestCall(ActiveResource.destroy(Department, {id:1}), 	"/departments/1", "POST"); // DELETE
+			assertRestCall(ActiveResource.destroy(Department, {id:1}), 	"/departments/1.json", "POST"); // DELETE
 			assertThat(lastHttpService.headers, hasProperties({X_HTTP_METHOD_OVERRIDE:'delete'}));
 		}
 		

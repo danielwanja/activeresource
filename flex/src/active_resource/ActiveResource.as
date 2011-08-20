@@ -41,40 +41,40 @@ package active_resource
 		static public function find(clazz:Class, id:Number):AsyncToken {
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id+".json";
-			http.resultFormat = "e4x";
+			http.resultFormat = "text";
 			return send(clazz, http);
 		}
 		
 		static public function findAll(clazz:Class):AsyncToken {
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
-			http.resultFormat = "e4x";		
+			http.resultFormat = "text";		
 			return send(clazz, http);			
 		}
 		
 		static public function create(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz);
+			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
 			http.method = "POST";
-			http.resultFormat = "e4x";
+			http.resultFormat = "text";
 			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function update(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id;
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
-			http.resultFormat = "e4x";
+			http.resultFormat = "text";
 			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
 		static public function destroy(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
-			http.resultFormat = "e4x";
+			http.resultFormat = "text";
 			return send(clazz, http, RailsEncoder.to_rails(data), data)
 		}
 		
@@ -92,7 +92,9 @@ package active_resource
 		}
 		
 		static public function handleResult(event:ResultEvent, token:Object=null):void {
-			event.mx_internal::setResult(mapErrors(RailsDecoder.from_rails(event.token.resourceClazz, event.result as String), event.token.originalData));
+			// FIXME: add error mapping. At RailsDecoder or ActiveResource level?
+			// FIXME: see how to reconnect  event.token.originalData
+			event.mx_internal::setResult(RailsDecoder.from_rails(event.token.resourceClazz, event.result as String));
 		}
 		
 		static protected function handleFault(fault:FaultEvent, token:Object=null):void {

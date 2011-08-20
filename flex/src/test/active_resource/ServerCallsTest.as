@@ -7,30 +7,23 @@ package test.active_resource
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
+	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.fail;
 	import org.flexunit.async.Async;
 	
 	import test.models.RcDataTypeTable;
 
 	public class ServerCallsTest
-	{		
+	{	
 		[Before]
 		public function setUp():void
 		{
+			// TODO: call factories controller to reset fixtures
 		}
 		
 		[After]
 		public function tearDown():void
-		{
-		}
-		
-		[BeforeClass]
-		public static function setUpBeforeClass():void
-		{
-		}
-		
-		[AfterClass]
-		public static function tearDownAfterClass():void
 		{
 		}
 
@@ -43,7 +36,9 @@ package test.active_resource
 		private function testFindAllResult(resultEvent:ResultEvent, token:Object=null):void
 		{
 			trace("0:"+resultEvent);
-			assertNull(resultEvent.result);
+			assertNotNull(resultEvent.result);
+			// TODO: asset the results
+			fail("Implement this next!");
 			
 		}
 		
