@@ -36,7 +36,7 @@ package test.active_resource
 		private var lastParams:Object;
 		private var lastOriginalData:Object;
 		
-		protected function mockSendFunction(service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
+		protected function mockSendFunction(resourceClazz:Class, service:HTTPService, params:Object=null, originalData:Object=null):AsyncToken {
 			this.lastHttpService = service;
 			this.lastParams = params;
 			this.lastOriginalData = originalData;
@@ -54,13 +54,13 @@ package test.active_resource
 			var department:Department = new Department();	
 			
 			//Index
-			assertRestCall(ActiveResource.findAll(Department), 			"/departments", "GET");
+			assertRestCall(ActiveResource.findAll(Department), 			"/departments.json", "GET");
 			
 			// Create
 			assertRestCall(ActiveResource.create(Department, {}), 		"/departments", "POST");
 			
 			// Show
-			assertRestCall(ActiveResource.find(Department, 1), 			"/departments/1", "GET");
+			assertRestCall(ActiveResource.find(Department, 1), 			"/departments/1.json", "GET");
 			
 			// Update
 			assertRestCall(ActiveResource.update(Department, {id:1}), 	"/departments/1", "POST"); // PUT

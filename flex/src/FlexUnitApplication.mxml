@@ -9,12 +9,12 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.active_resource.FromJSONTest;
+			import test.active_resource.ActiveResourceTest;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				testsToRun.push(test.active_resource.FromJSONTest);
+				testsToRun.push(test.active_resource.ActiveResourceTest);
 				return testsToRun;
 			}
 			

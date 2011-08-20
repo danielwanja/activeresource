@@ -40,14 +40,14 @@ package active_resource
 		
 		static public function find(clazz:Class, id:Number):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id+".xml";
+			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id+".json";
 			http.resultFormat = "e4x";
-			return send(http);
+			return send(clazz, http);
 		}
 		
 		static public function findAll(clazz:Class):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+".xml";
+			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
 			http.resultFormat = "e4x";		
 			return send(clazz, http);			
 		}
@@ -152,22 +152,16 @@ package active_resource
 		
 		public static function classForResource(resourceName:String):Class {
 			return BulkResource.classForResource(resourceName);
-//			var clazz:Class = resourceMap[resourceName];
-//			return clazz ? clazz : Object;
 		}
 		
 		public static function resourceForClass(clazz:Class):String {
 			return BulkResource.resourceForClass(clazz);
-			//return reverseMap[clazz];
 		}
 		
 		static protected var resourceMap:Object = {};
 		static protected var reverseMap:Object = {};
 		static protected function resource(resourceName:String, clazz:Class):void {
-			trace("Registering resource:"+resourceName)			
 			BulkResource.resource(resourceName, clazz);
-//			resourceMap[resourceName] = clazz;
-//			reverseMap[clazz] = resourceName;
 		}		
 		
 	}
