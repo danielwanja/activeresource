@@ -94,7 +94,8 @@ package active_resource
 		static public function handleResult(event:ResultEvent, token:Object=null):void {
 			// FIXME: add error mapping. At RailsDecoder or ActiveResource level?
 			// FIXME: see how to reconnect  event.token.originalData
-			event.mx_internal::setResult(RailsDecoder.from_rails(event.token.resourceClazz, event.result as String));
+			var result:Object = RailsDecoder.from_rails(event.token.resourceClazz, event.result as String);
+			event.mx_internal::setResult(result);
 		}
 		
 		static protected function handleFault(fault:FaultEvent, token:Object=null):void {

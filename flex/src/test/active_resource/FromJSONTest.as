@@ -66,6 +66,14 @@ package test.active_resource
 //			"updated_at": "2011-08-20T19:44:34Z"			
 		}
 		
+		
+		[Test]
+		public function testArrayWithOneElement():void {
+			var data:Object = RailsDecoder.from_rails(RcDataTypeTable, fixtures.rcDataTypeTablesOneElement);
+			assertTrue(data is ArrayCollection);
+		}
+		
+		
 		[Test]
 		public function testAssociations():void {
 			var departments:ArrayCollection =  RailsDecoder.from_rails(Department,  fixtures.departments) as ArrayCollection;

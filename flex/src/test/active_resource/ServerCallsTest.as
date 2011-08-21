@@ -2,6 +2,7 @@ package test.active_resource
 {
 	import active_resource.ActiveResource;
 	
+	import mx.collections.ArrayCollection;
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.AbstractEvent;
@@ -9,8 +10,10 @@ package test.active_resource
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 	
+	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
 	import org.flexunit.async.Async;
 	
@@ -43,9 +46,9 @@ package test.active_resource
 		{
 			trace("0:"+resultEvent);
 			assertNotNull(resultEvent.result);
-			// TODO: asset the results
-			// FIXME: findAll should return ArrayCollection even if only one items (and zero or more)
-			fail("Implement this next!");
+			assertTrue(resultEvent.result is ArrayCollection);
+			assertEquals(1, resultEvent.result.length);
+			assertTrue(resultEvent.result.getItemAt(0) is RcDataTypeTable);
 			
 		}
 		
@@ -56,6 +59,11 @@ package test.active_resource
 			
 		}
 		
+		//---------------------------------------------------------------------
+		// HELPER METHODS
+		//---------------------------------------------------------------------
+	
+
 		protected function invoke(call:AsyncToken, responder:Function, timeout:Number=2000):void {
 			call.addResponder(
 				Async.asyncResponder(this, new AsyncResponder(responder, responder), timeout));			
