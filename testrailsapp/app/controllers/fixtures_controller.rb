@@ -3,19 +3,19 @@
 if Rails.env.test?
   require 'active_record/fixtures'
   require 'factory_girl'
-#  require 'xml'
   
-  class FactoriesController < ActionController::Base
+  class FixturesController < ActionController::Base
     FIXTURES_ROOT = "#{Rails.root}/test/fixtures"
     
     def reset
-      Fixtures.reset_cache
-      factory_names = params[:fixtures][:fixture]
+      ActiveRecord::Fixtures.reset_cache
+      factory_names = Array(params[:fixtures][:fixture])
       fixtures = {}
       factory_names.each do |factory| 
         fixtures.merge!(self.send(factory)) # Here we could use the factory as key.
       end      
-      render :text => convert_to_xml(fixtures)
+      
+      render :json => fixtures
     end
     
     # def setup_fixtures
@@ -39,6 +39,7 @@ if Rails.env.test?
     end
   
     def setup_data_type_table
+      RcDataTypeTable.delete_all
       data = RcDataTypeTable.create(
         :a_string    =>  "MyString",
         :a_text      => "MyText",
@@ -79,22 +80,6 @@ if Rails.env.test?
       head :ok
     end
     
-    protected
-
-    #FIXME: duplicate functionality, see ResourceController
-    def convert_to_xml(obj)
-      document              = XML::Document.new
-      document.root         = XML::Node.new("response")
-      root                  = document.root
-      # root["payload"]       = obj.xml_payload_name
-      # root                 << obj.to_libxml
-      
-      node = obj.to_fxml
-      root['payload'] = node.name
-      root << node
-      
-      [document.to_s]
-    end
         
   end
   
