@@ -38,32 +38,32 @@ package test.active_resource
 
 		[Test(async)]
 		public function testFindAll():void {
-			var call:AsyncToken = ActiveResource.findAll(RcDataTypeTable);
-			call.addResponder(Async.asyncResponder(this, new AsyncResponder(testFindAllResult, testFindAllFault), 500));	
-		}
-		
-		private function testFindAllResult(resultEvent:ResultEvent, token:Object=null):void
-		{
-			trace("0:"+resultEvent);
-			assertNotNull(resultEvent.result);
-			assertTrue(resultEvent.result is ArrayCollection);
-			assertEquals(1, resultEvent.result.length);
-			assertTrue(resultEvent.result.getItemAt(0) is RcDataTypeTable);
-			
-		}
-		
-		private function testFindAllFault(faultEvent:FaultEvent, token:Object=null):void
-		{
-			// TODO Auto Generated method stub
-			trace("1:"+faultEvent);
-			
+			assertCall(ActiveResource.findAll(RcDataTypeTable), function(result:Object):void {
+				assertNotNull(result);
+				assertTrue(result is ArrayCollection);
+				assertEquals(1, result.length);
+				assertTrue(result.getItemAt(0) is RcDataTypeTable);				
+			})
 		}
 		
 		//---------------------------------------------------------------------
 		// HELPER METHODS
 		//---------------------------------------------------------------------
 	
-
+		protected function assertCall(call:AsyncToken, assertionFunction:Function):void {
+			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 500));
+			call.assertionFunction = assertionFunction;
+		}
+		
+		protected function resultHandler(resultEvent:ResultEvent, token:Object=null):void {
+			resultEvent.token.assertionFunction(resultEvent.result);	
+		}
+		
+		protected function faultHandler(faultEvent:FaultEvent, token:Object=null):void
+		{
+			fail("Expected resultEvent but got a faultEvent:"+faultEvent.toString());			
+		}		
+		
 		protected function invoke(call:AsyncToken, responder:Function, timeout:Number=2000):void {
 			call.addResponder(
 				Async.asyncResponder(this, new AsyncResponder(responder, responder), timeout));			
