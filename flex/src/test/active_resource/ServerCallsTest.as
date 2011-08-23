@@ -2,6 +2,8 @@ package test.active_resource
 {
 	import active_resource.ActiveResource;
 	
+	import com.adobe.serialization.json.JSONDecoder;
+	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
@@ -10,17 +12,24 @@ package test.active_resource
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 	
+	import org.flexunit.assertThat;
 	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.assertStrictlyEquals;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
 	import org.flexunit.async.Async;
+	import org.hamcrest.object.hasProperties;
 	
 	import test.models.RcDataTypeTable;
 
 	public class ServerCallsTest
 	{	
+		
+		private var fixtures:Object;
+		
 		[Before(async)]
 		public function setUp():void
 		{
@@ -46,6 +55,55 @@ package test.active_resource
 			})
 		}
 		
+		[Test(async)]
+		public function testFind():void {
+			var id:Number = fixtures.rc_data_type_table.id;
+			assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
+				assertNotNull(result);
+				assertTrue(result is RcDataTypeTable);
+				assertThat(result, hasProperties(fixtures.rc_data_type_table));
+				assertEquals(9.99, result.a_decimal);
+				assertFalse(isNaN(result.a_decimal));
+				assertFalse("Expect a_decimal to be a Number and not a string.", result.a_decimal is String);  // FIXME: that seems to occur on the Rails side.
+				assertStrictlyEquals(9.99, result.a_decimal);
+			})			
+		}
+		
+		[Test(async)]
+		public function testCreate():void {
+			var record:RcDataTypeTable = new RcDataTypeTable({
+				a_string    :  "A String",
+				a_text      : "A text that can be very long",
+				an_integer  : 3,
+				a_float     : 2.5,
+				a_decimal   : 99.99,
+				a_datetime  : "2011-08-15 17:06:09",
+				a_timestamp : "2011-08-15 17:06:09",
+				a_time      : "2011-08-15 17:06:09",
+				a_date      : "2011-08-15",
+				a_binary    : null,
+				a_boolean   : true
+			});
+			assertCall(ActiveResource.create(RcDataTypeTable, record), function(result:Object):void {
+				assertNotNull(result);
+				assertTrue(result is RcDataTypeTable);
+				assertEquals(99.99, result.a_decimal);
+				assertEquals("A String", result.a_string)
+				assertEquals("A text that can be very long", result.a_text);
+				assertNotNull(result.id);
+				assertTrue(result.id is Number);
+			})					
+		}		
+		
+		[Test(async)]
+		public function testUpdate():void {
+			
+		}		
+		
+		[Test(async)]
+		public function testDelete():void {
+			
+		}		
 		//---------------------------------------------------------------------
 		// HELPER METHODS
 		//---------------------------------------------------------------------
@@ -71,6 +129,7 @@ package test.active_resource
 		
 		protected function proceed(event:AbstractEvent, token:Object=null):void {
 			// do nothing
+			fixtures = event is ResultEvent ? new JSONDecoder((event as ResultEvent).result as String, true).getValue() : null;
 		}
 		
 	}

@@ -56,26 +56,29 @@ package active_resource
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
 			http.method = "POST";
+			http.contentType = "application/json";			
 			http.resultFormat = "text";
-			return send(clazz, http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.objectToRails(data), data)
 		}
 		
 		static public function update(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
+			http.contentType = "application/json";						
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
 			http.resultFormat = "text";
-			return send(clazz, http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.objectToRails(data), data)
 		}
 		
 		static public function destroy(clazz:Class, data:Object):AsyncToken {
 			var http:HTTPService = new HTTPService();
 			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
+			http.contentType = "application/json";						
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
 			http.resultFormat = "text";
-			return send(clazz, http, RailsEncoder.to_rails(data), data)
+			return send(clazz, http, RailsEncoder.objectToRails(data), data)  // FIXME: not sure resource needs to be sent
 		}
 		
 		//-----------------------------------------------------------

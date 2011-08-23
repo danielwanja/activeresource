@@ -1,0 +1,3 @@
+* Date transformation (use attribute introspection and add a date_field method)
+* a_decimal returns a String, should be Number
+* 

@@ -11,6 +11,9 @@
     <classEntry path="test.models.RcDataTypeTable"/>
     <classEntry path="test.active_resource.FromJSONTest"/>
     <classEntry path="test.fixtures.RailFixtures"/>
+    <classEntry path="test.active_resource.ToJSONTest"/>
+    <classEntry path="test.active_resource.NestedResourcesTest"/>
+    <classEntry path="test.active_resource.NestedAttributesTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
