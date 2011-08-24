@@ -4,6 +4,7 @@ package active_resource
 	import bulk_api.BulkResource;
 	
 	import com.adobe.serialization.json.JSONDecoder;
+	import com.adobe.utils.StringUtil;
 	
 	import mx.collections.ArrayCollection;
 
@@ -18,12 +19,12 @@ package active_resource
 		 */
 		static public function from_rails(resourceClass:*, json:String):Object {
 			var resourceName:String = resourceClass is String ? resourceClass : BulkResource.resourceForClass(resourceClass);
-			var actionScript:Object = new JSONDecoder(json, /*strict*/true).getValue();
+			var actionScript:Object = StringUtil.trim(json)!="" ? new JSONDecoder(json, /*strict*/true).getValue() : null;
 			// FIXME: Add Rails validation errors support
 			// FIXME: merge/refactor the following with the BulkDecoder
 			if (actionScript is Array) {
 				return BulkDecoder.decodeArray(resourceName, actionScript as Array);
-			} else {
+			} else if (actionScript != null) {
 				return BulkDecoder.cast(resourceName, actionScript);
 			}
 			return actionScript;

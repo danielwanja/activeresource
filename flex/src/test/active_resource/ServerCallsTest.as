@@ -97,19 +97,47 @@ package test.active_resource
 		
 		[Test(async)]
 		public function testUpdate():void {
-			
+			var id:Number = fixtures.rc_data_type_table.id;			
+			assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
+				// First we get a record
+				assertTrue(result is RcDataTypeTable);
+				var record:RcDataTypeTable = result as RcDataTypeTable;
+				record.a_string = "I just go updated!";
+				assertCall(ActiveResource.update(RcDataTypeTable, record), function(result:Object):void {
+					// Then update it
+					assertNull(result); // Update just set head :ok by default
+					assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
+						// Just checking that the record is really updated.
+						assertTrue(result is RcDataTypeTable);
+						assertEquals("I just go updated!", result.a_string);
+					})					
+				})			
+			})			
 		}		
 		
 		[Test(async)]
 		public function testDelete():void {
-			
+			var id:Number = fixtures.rc_data_type_table.id;			
+			assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
+				// First we get a record
+				var record:RcDataTypeTable = result as RcDataTypeTable;
+				assertCall(ActiveResource.destroy(RcDataTypeTable, record), function(result:Object):void {
+					// Then update it
+					assertNull(result); // Update just set head :ok by default
+					assertCall(ActiveResource.findAll(RcDataTypeTable), function(result:Object):void {
+						// Just checking that the record is really gone
+						assertTrue(result is ArrayCollection);
+						assertEquals(0, result.length);
+					})					
+				})			
+			})			
 		}		
 		//---------------------------------------------------------------------
 		// HELPER METHODS
 		//---------------------------------------------------------------------
 	
 		protected function assertCall(call:AsyncToken, assertionFunction:Function):void {
-			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 500));
+			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 2000));
 			call.assertionFunction = assertionFunction;
 		}
 		

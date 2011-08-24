@@ -1,5 +1,7 @@
 This document contains several design decisions or thoughts I'll make along the way:
 
+8/23/2011 I might require attributes declaration after all. That way I can introspect the resource and identify each attribute type. That solves the issue of needing a separate method to identify dates and also solves the issue of decimals coming across as strings. Further more using some annotations for associations, like RestfulX, I could do something with the has_many, and belongs_to...but that's for later.
+
 8/16/2011 
 - XML or JSON. JSON it is as it seem that Rails 3.1 doesn't even generate the respond_to for XML by default. In addition the bulk_data_source_flex project uses JSON and I want to merge it into the ActiveResource project at a later stage. 
 
