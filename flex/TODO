@@ -1,3 +1,10 @@
-* Date transformation (use attribute introspection and add a date_field method)
-* a_decimal returns a String, should be Number
-* 
+Next:
+
+* Add nested attributes
+
+Then:
+
+* validation errors
+* nested resources
+* date transformation (using introspection)
+* Number transformation (using introspection) (will fix a_decimal as string issue)
