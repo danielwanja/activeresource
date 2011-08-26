@@ -23,6 +23,7 @@ package test.active_resource
 	import org.flexunit.async.Async;
 	import org.hamcrest.object.hasProperties;
 	
+	import test.models.Department;
 	import test.models.RcDataTypeTable;
 
 	public class ServerCallsTest
@@ -132,11 +133,38 @@ package test.active_resource
 				})			
 			})			
 		}		
+		
+		[Test(async)]
+		public function testCreateWithValidationErrors():void {
+			var record:Department = new Department({
+				name :  "A name that is too long as it's more than 20 characters", 
+				city : "A text that can be very long",
+				state: "CO"
+			});
+			assertCall(ActiveResource.create(Department, record), 
+				function(result:Object):void {
+					fail("Expect the faultHandler to be called");
+				},
+				function(faultEvent:FaultEvent, token:Object=null):void {
+					assertNotNull(faultEvent.fault.content);
+					assertNotNull(record.errors);
+					assertTrue(record.errors.city is Array);
+					assertEquals(1, record.errors.city.length);
+					assertEquals("is too long (maximum is 20 characters)", record.errors.city[0]);
+					
+					assertTrue(record.errors.name is Array);
+					assertEquals(1, record.errors.name.length);
+					assertEquals("is too long (maximum is 20 characters)", record.errors.name[0]);
+				}
+			)					
+		}
+		
 		//---------------------------------------------------------------------
 		// HELPER METHODS
 		//---------------------------------------------------------------------
 	
-		protected function assertCall(call:AsyncToken, assertionFunction:Function):void {
+		protected function assertCall(call:AsyncToken, assertionFunction:Function, faultHandler:Function=null):void {
+			if (faultHandler==null) faultHandler = this.faultHandler;
 			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 2000));
 			call.assertionFunction = assertionFunction;
 		}

@@ -3,6 +3,8 @@ package active_resource
 	import bulk_api.BulkResource;
 	import bulk_api.BulkUtility;
 	
+	import com.adobe.serialization.json.JSONDecoder;
+	
 	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.ArrayCollection;
@@ -13,6 +15,7 @@ package active_resource
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 	import mx.utils.ObjectProxy;
+	import mx.utils.StringUtil;
 	
 	/**
 	 * A dynamic class that maps to a Resource. Can be used for CRUD operations.
@@ -102,7 +105,13 @@ package active_resource
 		}
 		
 		static protected function handleFault(fault:FaultEvent, token:Object=null):void {
-			// TODO: see how to deal with error object
+			// FIXME: test other errors like 500
+			if ([422, 404, 401, 400, 201].indexOf(fault.statusCode)>-1) {
+				var json:String = fault.fault.content as String;
+				var actionScript:Object = StringUtil.trim(json)!="" ? new JSONDecoder(json, /*strict*/true).getValue() : null;
+				fault.token.originalData.errors = actionScript; // FIXME: transform to specific object
+				fault.fault.content = actionScript;
+			}
 		}
 		
 		//-----------------------------------------------------------
