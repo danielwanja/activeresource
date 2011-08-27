@@ -109,8 +109,9 @@ package active_resource
 			if ([422, 404, 401, 400, 201].indexOf(fault.statusCode)>-1) {
 				var json:String = fault.fault.content as String;
 				var actionScript:Object = StringUtil.trim(json)!="" ? new JSONDecoder(json, /*strict*/true).getValue() : null;
-				fault.token.originalData.errors = actionScript; // FIXME: transform to specific object
-				fault.fault.content = actionScript;
+				var railsErrors:RailsErrors = new RailsErrors(actionScript);
+				fault.token.originalData.errors = railsErrors;
+				fault.fault.content =railsErrors;
 			}
 		}
 		

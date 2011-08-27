@@ -4,7 +4,6 @@ Next:
 
 Then:
 
-* validation errors
 * nested resources
 * date transformation (using introspection)
 * Number transformation (using introspection) (will fix a_decimal as string issue)

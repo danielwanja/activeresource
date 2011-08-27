@@ -1,6 +1,7 @@
 package test.active_resource
 {
 	import active_resource.ActiveResource;
+	import active_resource.RailsErrors;
 	
 	import com.adobe.serialization.json.JSONDecoder;
 	
@@ -147,14 +148,19 @@ package test.active_resource
 				},
 				function(faultEvent:FaultEvent, token:Object=null):void {
 					assertNotNull(faultEvent.fault.content);
-					assertNotNull(record.errors);
-					assertTrue(record.errors.city is Array);
-					assertEquals(1, record.errors.city.length);
-					assertEquals("is too long (maximum is 20 characters)", record.errors.city[0]);
+					assertTrue(record.errors is RailsErrors);
+					assertStrictlyEquals(record.errors, faultEvent.fault.content)
+					assertEquals(2, record.errors.count);
 					
-					assertTrue(record.errors.name is Array);
-					assertEquals(1, record.errors.name.length);
-					assertEquals("is too long (maximum is 20 characters)", record.errors.name[0]);
+					assertTrue(record.errors.on("city") is Array);
+					assertEquals(1, record.errors.on("city").length);
+					assertEquals("is too long (maximum is 20 characters)", record.errors.on("city")[0]);
+					
+					assertTrue(record.errors.on("name") is Array);
+					assertEquals(1, record.errors.on("name").length);
+					assertEquals("is too long (maximum is 20 characters)", record.errors.on("name")[0]);
+					
+					assertEquals("city is too long (maximum is 20 characters)\nname is too long (maximum is 20 characters)", record.errors.fullMessages());
 				}
 			)					
 		}
@@ -165,7 +171,7 @@ package test.active_resource
 	
 		protected function assertCall(call:AsyncToken, assertionFunction:Function, faultHandler:Function=null):void {
 			if (faultHandler==null) faultHandler = this.faultHandler;
-			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 2000));
+			call.addResponder(Async.asyncResponder(this, new AsyncResponder(resultHandler, faultHandler), 3000));
 			call.assertionFunction = assertionFunction;
 		}
 		
