@@ -1,5 +1,7 @@
 This document contains several design decisions or thoughts I'll make along the way:
 
+8/27/2011 Inflector, need to get a proper ActionScript library to get String inflection functionality. Looked at https://github.com/danschultz/mesh which seems quite nice, but I'm using http://ak33m.com/?p=43 for now as it's just one file.
+
 8/23/2011 I might require attributes declaration after all. That way I can introspect the resource and identify each attribute type. That solves the issue of needing a separate method to identify dates and also solves the issue of decimals coming across as strings. Further more using some annotations for associations, like RestfulX, I could do something with the has_many, and belongs_to...but that's for later.
 
 8/16/2011 

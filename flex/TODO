@@ -4,6 +4,10 @@ Next:
 
 Then:
 
+* Add nested attributes error handling
 * nested resources
 * date transformation (using introspection)
 * Number transformation (using introspection) (will fix a_decimal as string issue)
+* Simplified API, i.e. allow for instance.save()
+* Multiple associations data type i.e. ArrayCollection, Array, Vector...
+

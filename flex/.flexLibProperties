@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="active_resource.ActiveResource"/>
-    <classEntry path="active_resource.RailsEncoder"/>
     <classEntry path="active_resource.RailsDecoder"/>
-    <classEntry path="test.active_resource.ActiveResourceTest"/>
-    <classEntry path="test.models.Department"/>
-    <classEntry path="test.models.Employee"/>
-    <classEntry path="test.active_resource.ServerCallsTest"/>
-    <classEntry path="test.models.RcDataTypeTable"/>
-    <classEntry path="test.active_resource.FromJSONTest"/>
-    <classEntry path="test.fixtures.RailFixtures"/>
-    <classEntry path="test.active_resource.ToJSONTest"/>
-    <classEntry path="test.active_resource.NestedResourcesTest"/>
-    <classEntry path="test.active_resource.NestedAttributesTest"/>
+    <classEntry path="active_resource.RailsEncoder"/>
     <classEntry path="active_resource.RailsErrors"/>
+    <classEntry path="com.ak33m.utils.Inflector"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

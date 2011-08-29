@@ -4,6 +4,10 @@ class Department < ActiveRecord::Base
 
   attr_accessor :custom_attribute
   
+  def as_json(options={})    
+    super(:include => :employees)
+  end
+    
   def city_state
     [city, state].reject(&:blank?).join(', ')
   end

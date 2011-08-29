@@ -41,7 +41,7 @@ class DepartmentsController < ApplicationController
   # POST /departments.json
   def create
     @department = Department.new(params[:department])
-
+    
     respond_to do |format|
       if @department.save
         format.html { redirect_to @department, notice: 'Department was successfully created.' }
@@ -61,7 +61,7 @@ class DepartmentsController < ApplicationController
     respond_to do |format|
       if @department.update_attributes(params[:department])
         format.html { redirect_to @department, notice: 'Department was successfully updated.' }
-        format.json { head :ok }
+        format.json { render json: @department, status: :ok } # was { head :ok }
       else
         format.html { render action: "edit" }
         format.json { render json: @department.errors, status: :unprocessable_entity }

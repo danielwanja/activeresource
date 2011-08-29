@@ -9,14 +9,14 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.active_resource.ServerCallsTest;
+			import test.active_resource.NestedAttributesTest;
 			import org.flexunit.runner.Request;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
 				
-				testsToRun.push(Request.methods(test.active_resource.ServerCallsTest,["testCreateWithValidationErrors"]));
+				testsToRun.push(Request.methods(test.active_resource.NestedAttributesTest,["testUpdate"]));
 				return testsToRun;
 			}
 			
