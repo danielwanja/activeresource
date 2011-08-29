@@ -10,6 +10,7 @@ Then:
 * Simplified API, i.e. allow for instance.save()
 * Authenticity Token support
 * Multiple baseUrl support (i.e. one resource goes against serverA and the other serverB);
+* Custom verbs support
 * Multiple associations data type i.e. ArrayCollection, Array, Vector...
 
 To think about:

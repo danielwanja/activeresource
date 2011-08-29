@@ -6,7 +6,7 @@ A Flex/ActionScript Framework to integrate with Ruby on Rails. Provides Restful 
 
 ## Flex App
 
-Copy the flex/bin/activeresource.swc to the lib folder of you application.
+Copy the flex/bin/activeresource.swc to the lib folder of your application.
 
 ## Declaring the Resources
 
@@ -38,8 +38,8 @@ First create a dynamic class that maps to a resource:
 	
 ```
 
-Note the static _resource_ method is called when defining the class. This link the resource class to a the Rails resource name.
-By default ActiveResource.baseUrl points to http://localhost:3000. This works fine during development but you need to either point the resources to your server or use a relative path when your Flex application is served from the public folder of your Rails application. I.e. ActiveResource.baseUrl = "/";
+Note the static _resource_ method is called when defining the class. This links the resource class to a the Rails resource name.
+Also note that by default ActiveResource.baseUrl points to http://localhost:3000. This works fine during development but you need to either point the resources to your server or use a relative path when your Flex application is served from the public folder of your Rails application. I.e. ActiveResource.baseUrl = "/";
 
 ## Usage
 
@@ -48,18 +48,21 @@ By default ActiveResource.baseUrl points to http://localhost:3000. This works fi
 The Flex ActiveResource class allows to access a Rails resource and to perform a Index, Show, Create, Update and Delete. 
 
 Find All:
+
 ```javascript
     var call:AsyncToken = ActiveResource.findAll(Parent)
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
 Find one:
+
 ```javascript
     var call:AsyncToken = ActiveResource.find(Parent, 1)
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
 Create:
+
 ```javascript
     var parent:Parent = new Parent();
     parent.name = "Daniel";
@@ -69,6 +72,7 @@ Create:
 ```
 
 Update:
+
 ```javascript
     parent.favorite_food = "Chocolate";
     var call:AsyncToken = ActiveResource.update(Parent, parent)
@@ -78,6 +82,7 @@ Update:
 Note I will add a simplified syntax support for the create and update where you can just issue a _parent.save()_
 
 Delete:
+
 ```javascript
     var call:AsyncToken = ActiveResource.destroy(Parent, parent)
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
@@ -95,7 +100,7 @@ These are the Rails routes involved:
                 DELETE /parents/:id(.:format)                  {:action=>"destroy", :controller=>"parents"}
 ```
 
-The Flex ActiveResource class uses the JSON format. You can generate a default scaffolded controller for the _parent_ resource.
+You can generate a default scaffolded controller for the _parent_ resource and use to Flex ActiveResource framework to consume that resource. The Flex ActiveResource class uses the JSON format. One ActiveResource provides access to the different Rails routes (urls) to perform create, update and deletes.
 
 ```
     rails generate scaffold parent name:string birthday:date single:boolean
@@ -133,7 +138,7 @@ The following is an extract of the ParentController and shows the default genera
 
 ### Nested Attributes:
 
-Rails support nested attributes where complex data structures can be send in one request to the server for example in the following case a Parent model has many Children. By adding the _accepts_nested_attributes_for_ declaration to the parent active record you allow providing children attributes which can be used to create, update and delete children that are associated with the parent. 
+Rails support nested attributes where complex data structures can be sent in one request to the server. For example in the following case a Parent model has many Children. By adding the _accepts_nested_attributes_for_ declaration to the parent active record you allow providing children attributes which can be used to create, update and delete children that are associated with the parent. 
 
 
 ```ruby
@@ -147,6 +152,8 @@ Rails support nested attributes where complex data structures can be send in one
 	end
 ```
 
+Then you can update the parent and the child records in one request:
+
 ```javascript
    parent.children.addItem(new Child({first_name:'Rockie'}));
    parent.childreen.getItemAt(5)._destroy = true;
@@ -154,7 +161,39 @@ Rails support nested attributes where complex data structures can be send in one
    call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
-FIXME: I do agree that deleting children is a bad example in this case. Maybe an Order and it's OrderItems, or a Department and it's Employees...
+Note that the default generated Rails controller just returns an :ok after a successful update. If you wan't the update record and child records are returned you can modify the update method of the controller as follows:
+
+```ruby
+# PUT /parents/1.json
+    def update
+      @parent = Parent.find(params[:id])
+
+      respond_to do |format|
+        if @parent.update_attributes(params[:parent])
+          format.html { redirect_to @parent, notice: 'Parent was successfully updated.' }
+          format.json { render json: @parent, status: :ok } # was { head :ok }
+        else
+          format.html { render action: "edit" }
+          format.json { render json: @parent.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+```
+Note that the statement _head :ok_ was replace by _render json: @parent_
+
+and you can refine the JSON that is returned by the active record to always include the children of the parent:
+
+```ruby
+class Parent < ActiveRecord::Base
+  has_many    :children
+  accepts_nested_attributes_for :children, :allow_destroy => true
+
+  def as_json(options={})    
+    super(:include => :children)
+  end
+```  
+  
+FIXME: deleting children is a bad example/taste in this case. Maybe an Order and it's OrderItems, or a Department and it's Employees...
 
 ### RoadMap
 
