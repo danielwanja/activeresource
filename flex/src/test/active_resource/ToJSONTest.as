@@ -57,7 +57,6 @@ package test.active_resource
 		public function testNestedAttributes():void {
 			var parent:Parent = parentFixture();
 			var json:String = RailsEncoder.objectToRails(parent, {nestedAttributes:"children"});
-			trace(json);
 			var actual:Object = new JSONDecoder(json, /*strict*/true).getValue();
 			assertNotNull(actual.parent);
 			var parentObject:Object = actual.parent;
