@@ -1,13 +1,17 @@
 Next:
 
-* Add nested attributes
+* nested resources
 
 Then:
 
 * Add nested attributes error handling
-* nested resources
 * date transformation (using introspection)
 * Number transformation (using introspection) (will fix a_decimal as string issue)
 * Simplified API, i.e. allow for instance.save()
+* Authenticity Token support
+* Multiple baseUrl support (i.e. one resource goes against serverA and the other serverB);
 * Multiple associations data type i.e. ArrayCollection, Array, Vector...
 
+To think about:
+
+* pass conditions to the findAll ?

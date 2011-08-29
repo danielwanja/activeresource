@@ -4,117 +4,162 @@
 
 A Flex/ActionScript Framework to integrate with Ruby on Rails. Provides Restful access to Rails including nested attributes.
 
-## Installing:
+## Flex App
 
-### Rails app:
+Copy the flex/bin/activeresource.swc to the lib folder of you application.
 
-Add this line to Gemfile and run bundle install:
-```ruby
-gem 'flexonrails'
+## Declaring the Resources
+
+First create a dynamic class that maps to a resource:
+
+```javascript
+
+    dynamic public class Parent extends ActiveResource
+    {
+    	public function Parent(attributes:Object=null)
+    	{
+    		super(attributes);
+    	}
+	
+    	/* static block */		
+    	resource("parents", Parent); 		
+    }
+
+	dynamic public class Child extends ActiveResource
+	{
+		public function Child(attributes:Object=null)
+		{
+			super(attributes);
+		}
+		
+		/* static block */		
+		resource("children", Child); 		
+	}
+	
 ```
 
-```ruby
-	class Author < ActiveRecord::Base
-      accepts_nested_attributes_for :posts, :allow_destroy => true
-	end
-	
-	class Post < ActiveRecord::Base
-      accepts_nested_attributes_for :comments, :allow_destroy => true
-	end
-
-	class Comment < ActiveRecord::Base
-	end
-	
-```
-
-### Flex App
-
-Copy the flexonrails.swc to the lib folder of you application.
+Note the static _resource_ method is called when defining the class. This link the resource class to a the Rails resource name.
+By default ActiveResource.baseUrl points to http://localhost:3000. This works fine during development but you need to either point the resources to your server or use a relative path when your Flex application is served from the public folder of your Rails application. I.e. ActiveResource.baseUrl = "/";
 
 ## Usage
 
-First create a dynamic class that maps to q resource:
+### Flex
 
+The Flex ActiveResource class allows to access a Rails resource and to perform a Index, Show, Create, Update and Delete. 
+
+Find All:
 ```javascript
-	[RemoteClass(alias="Author")]
-	public dynamic class Author extends ActiveResource
-	{
-		resource("authors", Author);   // associate resource class...Hope I can determine this based on RemoteClass tag.
-		accepts_nested_attributes_for('posts')
-	}
-
-	[RemoteClass(alias="Post")]	
-	public dynamic class Post extends ActiveResource {
-		resource("posts", Post)		
-		accepts_nested_attributes_for('comments')
-	}
-	
-	[RemoteClass(alias="Comment")]	
-	public dynamic class Comment extends ActiveResource {
-		resource("comments", Comment);		
-	}
+    var call:AsyncToken = ActiveResource.findAll(Parent)
+	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
-Note that the accepts_nested_attributes_for is defined on the Flex side in order to identify which collections to send to the server as nested attributes. This allows in this case to update the author, it's posts and the associated comments in one server call.
+Find one:
+```javascript
+    var call:AsyncToken = ActiveResource.find(Parent, 1)
+	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
+```
 
-Find all authors with posts and comments:
+Create:
+```javascript
+    var parent:Parent = new Parent();
+    parent.name = "Daniel";
+    parent.favorite_food = "Cheese";
+    var call:AsyncToken = ActiveResource.create(Parent, parent)
+	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
+```
+
+Update:
+```javascript
+    parent.favorite_food = "Chocolate";
+    var call:AsyncToken = ActiveResource.update(Parent, parent)
+	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
+```
+		
+Note I will add a simplified syntax support for the create and update where you can just issue a _parent.save()_
+
+Delete:
+```javascript
+    var call:AsyncToken = ActiveResource.destroy(Parent, parent)
+	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
+```
+
+### Rails
+
+These are the Rails routes involved:
 
 ```ruby
-	class AuthorController < ApplicationController
+        parents GET    /parents(.:format)                      {:action=>"index", :controller=>"parents"}
+                POST   /parents(.:format)                      {:action=>"create", :controller=>"parents"}
+         parent GET    /parents/:id(.:format)                  {:action=>"show", :controller=>"parents"}
+                PUT    /parents/:id(.:format)                  {:action=>"update", :controller=>"parents"}
+                DELETE /parents/:id(.:format)                  {:action=>"destroy", :controller=>"parents"}
+```
 
-        def show  # FIXME: this example is wrong
-          @author = Author.find(params[:id], :include => {:posts => :comments})
+The Flex ActiveResource class uses the JSON format. You can generate a default scaffolded controller for the _parent_ resource.
 
-          respond_to do |format|
-            format.html # show.html.erb
-            format.json { render json: @author }
-            format.xml  { render @author }
-          end
-        end
-      
+```
+    rails generate scaffold parent name:string birthday:date single:boolean
+```
+
+The following is an extract of the ParentController and shows the default generated _index_ and _create_ methods.
+
+```ruby
+    # GET /parents.json
+    def index
+      @parents = Parent.all
+
+      respond_to do |format|
+        format.html # index.html.erb
+        format.json { render json: @parents }
+      end
     end
-```
+    
+    # POST /parents.json
+    def create
+      @parent = Parent.new(params[:parent])
 
-You can then query these nested objects from ActionScript:
+      respond_to do |format|
+        if @parent.save
+          format.html { redirect_to @parent, notice: 'Parent was successfully created.' }
+          format.json { render json: @parent, status: :created, location: @parent }
+        else
+          format.html { render action: "new" }
+          format.json { render json: @parent.errors, status: :unprocessable_entity }
+        end
+      end
+    end    
+```		
+
+
+### Nested Attributes:
+
+Rails support nested attributes where complex data structures can be send in one request to the server for example in the following case a Parent model has many Children. By adding the _accepts_nested_attributes_for_ declaration to the parent active record you allow providing children attributes which can be used to create, update and delete children that are associated with the parent. 
+
+
+```ruby
+	class Parent < ActiveRecord::Base
+	  has_many :children
+      accepts_nested_attributes_for :children, :allow_destroy => true
+	end
+	
+	class Child < ActiveRecord::Base
+	  belongs_to :parent
+	end
+```
 
 ```javascript
-    var call:AsyncToken = ActiveResource.find(Author, 1);
+   parent.children.addItem(new Child({first_name:'Rockie'}));
+   parent.childreen.getItemAt(5)._destroy = true;
+   var call:AsyncToken = ActiveResource.update(Parent, parent, {nestedAttributes:['children']})
+   call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
-Add one post and comment to the author:
-
-```javascript
-	var post:Post = new Post()
-	post.body = "Simple way to interact with Rails"
-	post.comments = new ArrayCollection
-	var comment:Comment = new Comment({content:'Using RDD - Readme Driven Development'})
-	post.comments.addItem(comment)
-
-    author.posts.addItem(post)
-    author.save()  # save changes on author, post, and comments
-```
-
-To delete one post and it's comments:
-
-```javascript
-    author.posts.getItemAt(0)._delete = true
-    author.save();
-```
-
+FIXME: I do agree that deleting children is a bad example in this case. Maybe an Order and it's OrderItems, or a Department and it's Employees...
 
 ### RoadMap
 
-1. setup test environment
-2. data conversion (from_json)
-3. data conversion (to_json)
-3. find/create/update/delete
-4. error handling
-5. date handling
-6. nested_attributes (with ActiveCollection)
-7. authenticity_token
-8. unify base classes with bulk_api_flex
-
-...
+1. complete the TODO to reach a version 1.0
+2. unify base classes with bulk_api_flex?
 
 ### Credits
 
