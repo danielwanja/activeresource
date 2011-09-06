@@ -82,7 +82,7 @@ package test.active_resource
 				a_binary    : null,
 				a_boolean   : true
 			});
-			assertCall(ActiveResource.create(RcDataTypeTable, record), function(result:Object):void {
+			assertCall(ActiveResource.create(RcDataTypeTable, record), function(result:Object):void {  //<-- CREATE
 				assertNotNull(result);
 				assertTrue(result is RcDataTypeTable);
 				assertEquals(99.99, result.a_decimal);
@@ -101,7 +101,7 @@ package test.active_resource
 				assertTrue(result is RcDataTypeTable);
 				var record:RcDataTypeTable = result as RcDataTypeTable;
 				record.a_string = "I just go updated!";
-				assertCall(ActiveResource.update(RcDataTypeTable, record), function(result:Object):void {
+				assertCall(ActiveResource.update(RcDataTypeTable, record), function(result:Object):void {  //<-- UPDATE
 					// Then update it
 					assertNull(result); // Update just set head :ok by default
 					assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
@@ -119,9 +119,9 @@ package test.active_resource
 			assertCall(ActiveResource.find(RcDataTypeTable, id), function(result:Object):void {
 				// First we get a record
 				var record:RcDataTypeTable = result as RcDataTypeTable;
-				assertCall(ActiveResource.destroy(RcDataTypeTable, record), function(result:Object):void {
+				assertCall(ActiveResource.destroy(RcDataTypeTable, record), function(result:Object):void {  //<-- DELETE
 					// Then update it
-					assertNull(result); // Update just set head :ok by default
+					assertNull(result); // Delete just set head :ok by default
 					assertCall(ActiveResource.findAll(RcDataTypeTable), function(result:Object):void {
 						// Just checking that the record is really gone
 						assertTrue(result is ArrayCollection);

@@ -1,5 +1,7 @@
 package active_resource
 {
+	import avmplus.getQualifiedClassName;
+	
 	import bulk_api.BulkResource;
 	import bulk_api.BulkUtility;
 	
@@ -16,7 +18,7 @@ package active_resource
 	import mx.rpc.http.HTTPService;
 	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
-	
+		
 	/**
 	 * A dynamic class that maps to a Resource. Can be used for CRUD operations.
 	 * 
@@ -41,23 +43,23 @@ package active_resource
 			BulkUtility.copyAttributes(attributes, this);
 		}
 		
-		static public function find(clazz:Class, id:Number):AsyncToken {
+		static public function find(clazz:Class, id:Number, findOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+id+".json";
+			http.url = getBaseUrl(findOptions)+"/"+resourceForClass(clazz)+"/"+id+".json";
 			http.resultFormat = "text";
 			return send(clazz, http);
 		}
 		
-		static public function findAll(clazz:Class):AsyncToken {
+		static public function findAll(clazz:Class, findOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
+			http.url = getBaseUrl(findOptions)+"/"+resourceForClass(clazz)+".json";
 			http.resultFormat = "text";		
 			return send(clazz, http);			
 		}
 		
 		static public function create(clazz:Class, data:Object, saveOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+".json";
+			http.url = getBaseUrl(saveOptions)+"/"+resourceForClass(clazz)+".json";
 			http.method = "POST";
 			http.contentType = "application/json";			
 			http.resultFormat = "text";
@@ -66,7 +68,7 @@ package active_resource
 		
 		static public function update(clazz:Class, data:Object, saveOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
+			http.url = getBaseUrl(saveOptions)+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.contentType = "application/json";						
 			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
@@ -74,9 +76,9 @@ package active_resource
 			return send(clazz, http, RailsEncoder.objectToRails(data, saveOptions), data)
 		}
 		
-		static public function destroy(clazz:Class, data:Object):AsyncToken {
+		static public function destroy(clazz:Class, data:Object, saveOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = baseUrl+"/"+resourceForClass(clazz)+"/"+data.id+".json";
+			http.url = getBaseUrl(saveOptions)+"/"+resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.contentType = "application/json";						
 			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
@@ -157,6 +159,18 @@ package active_resource
 		}
 		
 		//-----------------------------------------------------------
+		// ROUTING METHODS
+		//-----------------------------------------------------------
+		
+		static protected function getBaseUrl(options:Object=null):String {
+			var url:String = baseUrl;
+			if (options&&options.nestedBy&&options.nestedBy is ActiveResource) {
+				url += "/"+resourceForInstance(options.nestedBy)+"/"+options.nestedBy.id;
+			}
+			return url;
+		}
+		
+		//-----------------------------------------------------------
 		// CLASS REGISTRY METHODS
 		//-----------------------------------------------------------
 		
@@ -169,7 +183,11 @@ package active_resource
 		public static function classForResource(resourceName:String):Class {
 			return BulkResource.classForResource(resourceName);
 		}
-		
+
+		public static function resourceForInstance(instance:ActiveResource):String {
+			var clazz:Class = getDefinitionByName(getQualifiedClassName(instance)) as Class;			
+			return BulkResource.resourceForClass(clazz);
+		}		
 		public static function resourceForClass(clazz:Class):String {
 			return BulkResource.resourceForClass(clazz);
 		}

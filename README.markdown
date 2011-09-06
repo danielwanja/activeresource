@@ -184,13 +184,14 @@ Note that the statement _head :ok_ was replace by _render json: @parent_
 and you can refine the JSON that is returned by the active record to always include the children of the parent:
 
 ```ruby
-class Parent < ActiveRecord::Base
-  has_many    :children
-  accepts_nested_attributes_for :children, :allow_destroy => true
+    class Parent < ActiveRecord::Base
+      has_many    :children
+      accepts_nested_attributes_for :children, :allow_destroy => true
 
-  def as_json(options={})    
-    super(:include => :children)
-  end
+      def as_json(options={})    
+        super(:include => :children)
+      end
+    end
 ```  
   
 FIXME: deleting children is a bad example/taste in this case. Maybe an Order and it's OrderItems, or a Department and it's Employees...
