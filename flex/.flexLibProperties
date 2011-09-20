@@ -6,6 +6,7 @@
     <classEntry path="active_resource.RailsEncoder"/>
     <classEntry path="active_resource.RailsErrors"/>
     <classEntry path="com.ak33m.utils.Inflector"/>
+    <classEntry path="test.active_resource.ReflectionTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
