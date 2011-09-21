@@ -7,6 +7,8 @@
     <classEntry path="active_resource.RailsErrors"/>
     <classEntry path="com.ak33m.utils.Inflector"/>
     <classEntry path="test.active_resource.ReflectionTest"/>
+    <classEntry path="active_resource.ClassRegistry"/>
+    <classEntry path="test.models.TypedDepartment"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,7 +1,6 @@
 package active_resource
 {
 	import bulk_api.BulkEncoder;
-	import bulk_api.BulkResource;
 	import bulk_api.BulkUtility;
 	
 	import com.adobe.serialization.json.JSONEncoder;

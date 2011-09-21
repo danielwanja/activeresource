@@ -1,7 +1,6 @@
 package active_resource
 {
 	import bulk_api.BulkDecoder;
-	import bulk_api.BulkResource;
 	
 	import com.adobe.serialization.json.JSONDecoder;
 	import com.adobe.utils.StringUtil;
@@ -18,16 +17,39 @@ package active_resource
 		 * @return the translated ActionScript structure like anarray of Resources or a instance of a Resource depending on the call type.
 		 */
 		static public function from_rails(resourceClass:*, json:String):Object {
-			var resourceName:String = resourceClass is String ? resourceClass : BulkResource.resourceForClass(resourceClass);
+			var resourceName:String = resourceClass is String ? resourceClass : ClassRegistry.resourceForClass(resourceClass);
 			var actionScript:Object = StringUtil.trim(json)!="" ? new JSONDecoder(json, /*strict*/true).getValue() : null;
 			// FIXME: Add Rails validation errors support
-			// FIXME: merge/refactor the following with the BulkDecoder
 			if (actionScript is Array) {
-				return BulkDecoder.decodeArray(resourceName, actionScript as Array);
+				return decodeArray(resourceName, actionScript as Array);
 			} else if (actionScript != null) {
-				return BulkDecoder.cast(resourceName, actionScript);
+				return cast(resourceName, actionScript);
 			}
 			return actionScript;
 		}
+		
+		// FIXME: merge/refactor the following with the BulkDecoder
+		static public function decodeArray(resourceName:String, records:Array):ArrayCollection {
+			var result:Array = [];
+			for each (var record:Object in records) {
+				result.push(cast(resourceName, record));	   
+			}
+			return new ArrayCollection(result);
+		}
+		
+		static public function cast(resourceName:String, record:Object):Object {
+			var clazz:Class = ClassRegistry.classForResource(resourceName); 
+			var instance:Object = new clazz();
+			for (var attr:String in record) {
+				if (record[attr] is Array) {
+					instance[attr] = decodeArray(attr, record[attr] as Array);
+				} else {
+					instance[attr] = record[attr];
+				}
+				// TODO: add test to check if instance is dynamic (use describeType+type+.isDynamic)
+				// TODO: transform date fields based on metadata.json or other mechanism
+			}
+			return instance;
+		}		
 	}
 }

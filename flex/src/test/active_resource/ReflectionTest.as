@@ -5,7 +5,7 @@ package test.active_resource
 	import org.flexunit.assertThat;
 	import org.hamcrest.object.hasProperties;
 	
-	import test.models.Department;
+	import test.models.TypedDepartment;
 
 	public class ReflectionTest
 	{		
@@ -21,7 +21,7 @@ package test.active_resource
 
 		[Test]
 		public function testGetAttributes():void {
-			var d:Department = new Department;
+			var d:TypedDepartment = new TypedDepartment;
 			var attributes:Object = getAttributes(d);
 			assertThat(attributes, hasProperties({id:hasProperties({name:'id', type:'Number', transient:false}),
 												  city:hasProperties({name:'city', type:'String', transient:false}), 

@@ -9,14 +9,12 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.active_resource.ReflectionTest;
-			import org.flexunit.runner.Request;
+			import test.active_resource.ServerCallsTest;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				
-				testsToRun.push(Request.methods(test.active_resource.ReflectionTest,["testGetAttributes"]));
+				testsToRun.push(test.active_resource.ServerCallsTest);
 				return testsToRun;
 			}
 			
