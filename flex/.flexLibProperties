@@ -9,6 +9,7 @@
     <classEntry path="test.active_resource.ReflectionTest"/>
     <classEntry path="active_resource.ClassRegistry"/>
     <classEntry path="test.models.TypedDepartment"/>
+    <classEntry path="active_resource.Reflection"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -9,22 +9,23 @@ package test.models
 			super(attributes);
 		}
 		
+		public var id:*;
+		public var a_string:String;
+		public var a_text:String;
+		public var an_integer:Number;
+		public var a_float:Number
+		public var a_decimal:Number
+		public var a_datetime:Date;
+		public var a_timestamp:Date;
+		public var a_time:Date;
+		public var a_date:Date;
+		public var a_binary:*;   // Fixme: How to map a binary?
+		public var a_boolean:Boolean;
+		public var created_at:Date;
+		public var updated_at:Date;
+		
 		/* static block */		
 		resource("rc_data_type_tables", RcDataTypeTable); 	
 		
-		/* Date Field Declaration: a) or b) Note I want to avoid a) but it's more Flex like, it's however
-		                           really nice to stay DRY and not repeat all the model attributes.
-		
-		a) strongly typed variables 
-		var a_date : Date;
-		var a_datetime : Date;
-		var a_time : Date;
-		var a_timestamp : Date;
-		var created_at : Date;
-		var updated_a : Date;
-		
-		or b)		
-		date_field "a_date,a_datetime,a_time,a_timestamp,created_at,updated_a"
-		*/
 	}
 }

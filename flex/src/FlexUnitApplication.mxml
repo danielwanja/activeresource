@@ -9,12 +9,24 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
+			import test.active_resource.ToJSONTest;
 			import test.active_resource.ServerCallsTest;
+			import test.active_resource.ReflectionTest;
+			import test.active_resource.NestedResourcesTest;
+			import test.active_resource.NestedAttributesTest;
+			import test.active_resource.FromJSONTest;
+			import test.active_resource.ActiveResourceTest;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
+				testsToRun.push(test.active_resource.ActiveResourceTest);
+				testsToRun.push(test.active_resource.FromJSONTest);
+				testsToRun.push(test.active_resource.NestedAttributesTest);
+				testsToRun.push(test.active_resource.NestedResourcesTest);
+				testsToRun.push(test.active_resource.ReflectionTest);
 				testsToRun.push(test.active_resource.ServerCallsTest);
+				testsToRun.push(test.active_resource.ToJSONTest);
 				return testsToRun;
 			}
 			

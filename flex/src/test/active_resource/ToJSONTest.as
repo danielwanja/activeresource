@@ -36,9 +36,9 @@ package test.active_resource
 				an_integer  : 3,
 				a_float     : 2.5,
 				a_decimal   : 99.99,
-				a_datetime  : "2011-08-15 17:06:09",
-				a_timestamp : "2011-08-15 17:06:09",
-				a_time      : "2011-08-15 17:06:09",
+				a_datetime  : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
+				a_timestamp : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
+				a_time      : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
 				a_date      : new Date(2011,07,15),
 				a_binary    : null,
 				a_boolean   : true
@@ -48,8 +48,11 @@ package test.active_resource
 			assertThat(json, containsString('"a_decimal":99.99'));
 			assertThat(json, containsString('"a_string":"A String"'));
 			assertThat(json, containsString('"a_text":"A text that can be very long"'));
-			assertThat(json, containsString('"a_date":{"millisecondsUTC":0,"secondsUTC":0,"fullYear":2011,"day":1,"dayUTC":1'));
-			fail("Implement data conversion as a_date should be Rails date format complient.")
+			assertThat(json, containsString('"a_date":"2011-08-15T06:00:00-00:00"'));
+			assertThat(json, containsString('"a_datetime":"2011-08-15T23:06:09-00:00"'));  // FIXME: check timezone conversion...
+			assertThat(json, containsString('"a_timestamp":"2011-08-15T23:06:09-00:00"'));
+			assertThat(json, containsString('"a_time":"2011-08-15T23:06:09-00:00"'));
+			fail("Check to ensure that we don't have timezone issue between 17:06:09 and T23:06:09.")
 		}
 		
 		// see http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html

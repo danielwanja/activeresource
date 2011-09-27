@@ -9,6 +9,10 @@ package test.models
 			super(attributes);
 		}
 		
+		public var id:*;
+		public var name:String;
+		public var favorite_food:String;
+		
 		/* static block */		
 		resource("children", Child); 		
 	}

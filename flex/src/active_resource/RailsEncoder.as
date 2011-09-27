@@ -4,6 +4,7 @@ package active_resource
 	import bulk_api.BulkUtility;
 	
 	import com.adobe.serialization.json.JSONEncoder;
+	import com.adobe.utils.DateUtil;
 	import com.ak33m.utils.Inflector;
 	
 	import mx.collections.ArrayCollection;
@@ -55,12 +56,13 @@ package active_resource
 			if (parentAttributeNames==null) parentAttributeNames = [];
 			if (record is ObjectProxy) {
 				var result:Object = {};
-				var attributes:Array = BulkUtility.getAttributeNames(record);
-				for each (var attribute:String in attributes) {
-					var value:* = record[attribute];
+				var attributes:Object = Reflection.getAttributes(record);
+				for each (var attribute:Object in attributes) {
+					var attributeName:String = attribute.name;
+					var value:* = record[attributeName];
 					// Check if nested attribute, then add "_attributes" to attribute name
-					var attributePath:Array = parentAttributeNames.concat(attribute); // Increment attribute to path
-					var resultAttribute:String = attribute;
+					var attributePath:Array = parentAttributeNames.concat(attributeName); // Increment attribute to path
+					var resultAttribute:String = attributeName;
 					if (options &&options.nestedAttributes&&options.nestedAttributes.indexOf(attributePath.join('.'))>-1) 
 						resultAttribute += "_attributes";
 					if (value is ArrayCollection) {
@@ -68,9 +70,14 @@ package active_resource
 					} else if (value  is ActiveResource) {
 						result[resultAttribute] = encodeObject(value, options, attributePath); // FIXME: add test case for this scenario.
 					} else {
-						result[resultAttribute] = value;
+						if (attribute.type=="Date"&&value is Date) {
+							result[resultAttribute] = DateUtil.toW3CDTF(value);
+						} else {
+							result[resultAttribute] = value;
+						}
 					}
-				}	
+				}
+				if (record['_destroy']) result._destroy = record['_destroy']; // FIXME: find nicer code for non-attribute columns that should be sent to server
 				//result._local_id = record.uid;
 				return result;
 			} 

@@ -3,6 +3,7 @@ package active_resource
 	import bulk_api.BulkDecoder;
 	
 	import com.adobe.serialization.json.JSONDecoder;
+	import com.adobe.utils.DateUtil;
 	import com.adobe.utils.StringUtil;
 	
 	import mx.collections.ArrayCollection;
@@ -40,11 +41,18 @@ package active_resource
 		static public function cast(resourceName:String, record:Object):Object {
 			var clazz:Class = ClassRegistry.classForResource(resourceName); 
 			var instance:Object = new clazz();
+			var attributes:Object = Reflection.getAttributes(instance);
 			for (var attr:String in record) {
-				if (record[attr] is Array) {
-					instance[attr] = decodeArray(attr, record[attr] as Array);
+				var value:* = record[attr];
+				if (value is Array) {
+					instance[attr] = decodeArray(attr, value as Array);
 				} else {
-					instance[attr] = record[attr];
+					if (attributes[attr].type != "Date") {
+						instance[attr] = value;
+					} else {
+						if (value is String && value.length == 10) value = value+"T00:00:00Z"
+						instance[attr] = value ? DateUtil.parseW3CDTF(value) : null;
+					}
 				}
 				// TODO: add test to check if instance is dynamic (use describeType+type+.isDynamic)
 				// TODO: transform date fields based on metadata.json or other mechanism

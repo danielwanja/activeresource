@@ -10,6 +10,11 @@ package test.models
 			super(attributes);
 		}
 		
+		public var id:*;
+		public var name:String;
+		public var created_at:Date;		
+		public var updated_at:Date;
+		
 		/* static block */
 		resource("jobs", Job); 		
 	}

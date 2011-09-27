@@ -77,10 +77,10 @@ package test.active_resource
 				an_integer  : 3,
 				a_float     : 2.5,
 				a_decimal   : 99.99,
-				a_datetime  : "2011-08-15 17:06:09",
-				a_timestamp : "2011-08-15 17:06:09",
-				a_time      : "2011-08-15 17:06:09",
-				a_date      : "2011-08-15",
+				a_datetime  : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
+				a_timestamp : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
+				a_time      : new Date(2011, 07, 15, 17, 06, 09), // "2011-08-15 17:06:09"
+				a_date      : new Date(2011,07,15),
 				a_binary    : null,
 				a_boolean   : true
 			});

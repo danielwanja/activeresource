@@ -1,5 +1,7 @@
 package test.active_resource
 {
+	import active_resource.Reflection;
+	
 	import flash.utils.describeType;
 	
 	import org.flexunit.assertThat;
@@ -21,9 +23,9 @@ package test.active_resource
 
 		[Test]
 		public function testGetAttributes():void {
-			var d:TypedDepartment = new TypedDepartment;
-			var attributes:Object = getAttributes(d);
-			assertThat(attributes, hasProperties({id:hasProperties({name:'id', type:'Number', transient:false}),
+			var department:TypedDepartment = new TypedDepartment;
+			var attributes:Object = Reflection.getAttributes(department);
+			assertThat(attributes, hasProperties({id:hasProperties({name:'id', type:'*', transient:false}),
 												  city:hasProperties({name:'city', type:'String', transient:false}), 
 												  state:hasProperties({name:'state', type:'String', transient:false}),
 				                                  created_at:hasProperties({name:'created_at', name:'Date', transient:false}),
@@ -37,20 +39,7 @@ package test.active_resource
 			// test also uint, int,
 			// support typed Objects
 		}
-		protected function getAttributes(instance:Object):Object {
-			var result:Object = {};
-			var propertyMap:XML = describeType(instance);
-			for each (var property:XML in propertyMap.variable) 
-			{
-				var propertyName:String = property.@name;
-				var propertyType:String = property.@type;
-				var transient:String = property.metadata.(@name=='Transient').@name.toString();
-				result[propertyName] = {name:propertyName, type:propertyType, transient:transient=='Transient'};
-			}
-			return result;
-			
-			// TODO: add getter and setter
-		}
+
 		
 		
 	}

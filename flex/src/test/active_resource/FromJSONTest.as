@@ -100,7 +100,7 @@ package test.active_resource
 				job_id: 12,
 				last_name: "last_1",
 				manager_id: 980190965,
-				salary: null
+				salary: 0
 			}));		
 			
 		}

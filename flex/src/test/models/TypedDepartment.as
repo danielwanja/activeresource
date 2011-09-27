@@ -13,7 +13,7 @@ package test.models
 			super(attributes);
 		}
 		
-		public var id:Number;
+		public var id:*;
 		public var name:String;
 		public var city:String;
 		public var state:String;
