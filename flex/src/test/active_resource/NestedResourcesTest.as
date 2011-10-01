@@ -36,11 +36,11 @@ package test.active_resource
 			department.name = "department one";
 			department.id = 1;
 			
-			assertRestCall(ActiveResource.create(Employee, employee, {nestedBy:department}),  "/departments/1/employees.json", "POST");
+			assertRestCall(employee.save({nestedBy:department}),  "/departments/1/employees.json", "POST");
 			
 			employee.id = 3;
-			assertRestCall(ActiveResource.update(Employee, employee, {nestedBy:department}),  "/departments/1/employees/3.json", "POST");
-			assertRestCall(ActiveResource.destroy(Employee, employee, {nestedBy:department}),  "/departments/1/employees/3.json", "POST");
+			assertRestCall(employee.save({nestedBy:department}),  "/departments/1/employees/3.json", "POST");
+			assertRestCall(employee.destroy({nestedBy:department}),  "/departments/1/employees/3.json", "POST");
 		}		
 		
 		private var lastHttpService:HTTPService;
