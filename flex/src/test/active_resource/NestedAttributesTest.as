@@ -61,7 +61,7 @@ package test.active_resource
 //			emp2.job = new Job();
 //			emp2.job.name = "Job Name";
 			dept.employees.addItem(emp2);   
-			assertCall(ActiveResource.create(Department, dept, {nestedAttributes:['employees','employees.job']}), function(result:Object):void {
+			assertCall(dept.save({nestedAttributes:['employees','employees.job']}), function(result:Object):void {
 				assertTrue(result is Department);
 				var dept:Department = result as Department;
 				assertEquals("IS", dept.name);
@@ -86,7 +86,7 @@ package test.active_resource
 				dept.name = "UPDATED";
 				dept.employees[0].last_name = "UPDATED";
 				dept.employees[1]._destroy = true;	
-				assertCall(ActiveResource.update(Department, dept, {nestedAttributes:['employees','employees.job']}), function (result:Object):void {
+				assertCall(dept.save({nestedAttributes:['employees','employees.job']}), function (result:Object):void {
 					var dept:Department = result as Department;
 					assertNotNull(dept);
 					assertEquals("UPDATED", dept.name);
