@@ -1,10 +1,3 @@
-Next:
-
-* Simplified API, i.e. allow for instance.save() 
-  and ActiveResource.create(Employee, employee) should be ActiveResource.create(employee)
-
-Then:
-
 * Add nested attributes error handling
 * Authenticity Token support
 * Multiple baseUrl support (i.e. one resource goes against serverA and the other serverB);

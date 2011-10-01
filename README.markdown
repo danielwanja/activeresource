@@ -1,5 +1,3 @@
-# WARNING: not prime time ready...In fact I just started this project (August 15th 2011)
-
 # activeresource - An ActionScript Framework to integrate Flex with Ruby on Rails
 
 A Flex/ActionScript Framework to integrate with Ruby on Rails. Provides Restful access to Rails including nested attributes.
@@ -67,7 +65,7 @@ Create:
     var parent:Parent = new Parent();
     parent.name = "Daniel";
     parent.favorite_food = "Cheese";
-    var call:AsyncToken = ActiveResource.create(Parent, parent)
+    var call:AsyncToken = parent.save();
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
@@ -75,7 +73,7 @@ Update:
 
 ```javascript
     parent.favorite_food = "Chocolate";
-    var call:AsyncToken = ActiveResource.update(Parent, parent)
+    var call:AsyncToken = parent.save();
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 		
@@ -84,7 +82,7 @@ Note I will add a simplified syntax support for the create and update where you 
 Delete:
 
 ```javascript
-    var call:AsyncToken = ActiveResource.destroy(Parent, parent)
+    var call:AsyncToken = parent.destroy();
 	call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
@@ -157,7 +155,7 @@ Then you can update the parent and the child records in one request:
 ```javascript
    parent.children.addItem(new Child({first_name:'Rockie'}));
    parent.childreen.getItemAt(5)._destroy = true;
-   var call:AsyncToken = ActiveResource.update(Parent, parent, {nestedAttributes:['children']})
+   var call:AsyncToken = parent.save({nestedAttributes:['children']})
    call.addResponder(new AsyncResponder(resultHandler, faultHandler));
 ```
 
@@ -198,8 +196,9 @@ FIXME: deleting children is a bad example/taste in this case. Maybe an Order and
 
 ### RoadMap
 
-1. complete the TODO to reach a version 1.0
+1. extend test coverage 
 2. unify base classes with bulk_api_flex?
+3. improve server side validation support 
 
 ### Credits
 
