@@ -14,8 +14,8 @@ package test.models
 		}
 		
 		public var id:*;
-		public var name:String;
-		public var city:String;
+		[Bindable] public var name:String;
+		[Bindable] public var city:String;
 		public var state:String;
 		public var created_at:Date;
 		public var updated_at:Date;
