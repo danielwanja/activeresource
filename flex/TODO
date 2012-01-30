@@ -1,5 +1,6 @@
+* Basic Authentication support
 * Add nested attributes error handling
-* Authenticity Token support
+* Authenticity Token support (may not be required anymore if similar to XML)
 * Multiple baseUrl support (i.e. one resource goes against serverA and the other serverB);
 * Custom verbs support
 * Multiple associations data type i.e. ArrayCollection, Array, Vector...
