@@ -10,11 +10,14 @@ package active_resource
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.mx_internal;
+	import mx.messaging.messages.HTTPRequestMessage;
+	import mx.messaging.messages.IMessage;
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
+	import mx.utils.Base64Encoder;
 	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
 		
@@ -51,9 +54,18 @@ package active_resource
 		
 		static public function findAll(clazz:Class, findOptions:Object=null):AsyncToken {
 			var http:HTTPService = new HTTPService();
-			http.url = getBaseUrl(findOptions)+"/"+ClassRegistry.resourceForClass(clazz)+".json";
-			http.resultFormat = "text";		
-			return send(clazz, http);			
+			http.url = getBaseUrl(findOptions)+"/"+ClassRegistry.resourceForClass(clazz)+postFix(findOptions)+".json";
+			http.resultFormat = "text";	
+			var call:AsyncToken = send(clazz, http);
+			if (findOptions&&findOptions.credentials) setCredentials(call.message as HTTPRequestMessage, findOptions.credentials);
+			return call			
+		}
+		
+		static protected function setCredentials(message:HTTPRequestMessage,credentials:Object):void {
+			var encoder:Base64Encoder = new Base64Encoder();
+			encoder.insertNewLines = false; 
+			encoder.encode(credentials.username+":"+credentials.password);
+			message.httpHeaders["Authorization"] = "Basic " + encoder.toString();;  			
 		}
 		
 		static public function create(clazz:Class, data:Object, saveOptions:Object=null):AsyncToken {
@@ -70,7 +82,7 @@ package active_resource
 			http.url = getBaseUrl(saveOptions)+"/"+ClassRegistry.resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.contentType = "application/json";						
-			http.headers={X_HTTP_METHOD_OVERRIDE:'put'}; // tell Rails we really want a put
+			http.headers={X_HTTP_METHOD_OVERRIDE:'put', 'X-HTTP-METHOD-OVERRIDE':'put'}; // tell Rails we really want a put
 			http.resultFormat = "text";
 			return send(clazz, http, RailsEncoder.objectToRails(data, saveOptions), data)
 		}
@@ -80,7 +92,7 @@ package active_resource
 			http.url = getBaseUrl(saveOptions)+"/"+ClassRegistry.resourceForClass(clazz)+"/"+data.id+".json";
 			http.method = "POST";
 			http.contentType = "application/json";						
-			http.headers={X_HTTP_METHOD_OVERRIDE:'delete'}; // tell Rails we really want a delete
+			http.headers={X_HTTP_METHOD_OVERRIDE:'delete', 'X-HTTP-METHOD-OVERRIDE':'delete'}; // tell Rails we really want a delete
 			http.resultFormat = "text";
 			return send(clazz, http, RailsEncoder.objectToRails(data), data)  // FIXME: not sure resource needs to be sent
 		}
@@ -110,7 +122,7 @@ package active_resource
 			var call:AsyncToken = service.send(params);
 			call.addResponder(new AsyncResponder(handleResult, handleFault));
 			call.originalData = originalData; // token
-			call.resourceClazz = resourceClazz
+			call.resourceClazz = resourceClazz				
 			return call;			
 		}
 		
@@ -127,7 +139,7 @@ package active_resource
 				var json:String = fault.fault.content as String;
 				var actionScript:Object = StringUtil.trim(json)!="" ? new JSONDecoder(json, /*strict*/true).getValue() : null;
 				var railsErrors:RailsErrors = new RailsErrors(actionScript);
-				fault.token.originalData.errors = railsErrors;
+				if (fault.token.originalData) fault.token.originalData.errors = railsErrors;
 				fault.fault.content =railsErrors;
 			}
 		}
@@ -183,6 +195,10 @@ package active_resource
 				url += "/"+ClassRegistry.resourceForInstance(options.nestedBy)+"/"+options.nestedBy.id;
 			}
 			return url;
+		}
+		
+		static protected function postFix(options:Object=null):String {
+			return options&&options.postfix ? options.postfix : "";
 		}
 		
 		//-----------------------------------------------------------
